@@ -426,6 +426,7 @@ class geneticalgorithm():
             show = ' ' * 100
             sys.stdout.write('\r%s' % (show))
         ##Commented lines to avoid printing solutions
+        #by Amilton
         #sys.stdout.write('\r The best solution found:\n %s' % (self.best_variable))
         #sys.stdout.write('\n\n Objective function:\n %s\n' % (self.best_function))
         #sys.stdout.flush()
@@ -437,9 +438,11 @@ class geneticalgorithm():
             plt.title('Genetic Algorithm')
             plt.show()
 
-        if self.stop_mniwi == True:
-            sys.stdout.write('\nWarning: GA is terminated due to the' + \
-                             ' maximum number of iterations without improvement was met!')
+        #commented to avoid printing warnings and reducing execution time
+        # by Amilton
+        #if self.stop_mniwi == True:
+            #sys.stdout.write('\nWarning: GA is terminated due to the' + \
+            #                 ' maximum number of iterations without improvement was met!')
 
     ##############################################################################
     ##############################################################################
