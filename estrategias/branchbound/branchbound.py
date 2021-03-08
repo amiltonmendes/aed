@@ -15,24 +15,17 @@ class Simple(pybnb.Problem):
     def sense(self):
         return pybnb.minimize
     def objective(self):
-        return self.custo #self.lst.custo_total
-        #return self.custo#round(self._xU-self._xL,3)
+        return self.custo
     def bound(self):
-        #return -(self.lst.custo_total)**2
-        return self.custo-1#-(self._xU - self._xL)**2
+        return self.custo-1
     def save_state(self, node):
         node.state = (self.lst,self._xL, self._xU, self.custo)
     def load_state(self, node):
-        #(self._xL, self._xU)
         (self.lst,self._xL, self._xU, self.custo)= node.state
     def branch(self):
-        #xL, xU = self._xL, self._xU
-        #xM = 0.5 * (xL + xU)
-        #operacoes
         for i in [OperacoesPossiveis.SWAP,OperacoesPossiveis.DELETE,OperacoesPossiveis.NOP]:
             child = pybnb.Node()
             lst_cp = deepcopy(self.lst)
-
             if lst_cp.adiciona_movimento(i):
                 if(lst_cp.is_finished()):
                     if self.custo > lst_cp.custo_total:
@@ -44,9 +37,6 @@ class Simple(pybnb.Problem):
                             lista_ops.lst=lst_cp
                         elif lst_cp.custo_total<lista_ops.lst.custo_total:
                             lista_ops.lst = lst_cp
-
-
-
                 child.state = (lst_cp,self._xL,self._xU,self.custo)
                 yield child
 
@@ -71,7 +61,7 @@ class Singleton:
 
 
 a='abacaixs'
-b='abacaxi'
+b='bacaxi'
 problem = Simple(a,b)
 solver = pybnb.Solver(comm=None)
 results = solver.solve(problem)
