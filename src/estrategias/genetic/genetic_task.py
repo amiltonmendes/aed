@@ -1,6 +1,6 @@
-from estrategias.utils.utils_string_corrector_branch import OperacoesPossiveis,ListaMovimentos
+from src.utils.utils_string_corrector import OperacoesPossiveis,ListaMovimentos
 import numpy as np
-from geneticalgorithm_modified import geneticalgorithm as ga
+from geneticalgorithm import geneticalgorithm as ga
 import editdistance
 
 class AvaliaMovimento:
@@ -36,7 +36,7 @@ class AvaliaMovimento:
                 lst.adiciona_movimento(OperacoesPossiveis.DELETE)
         return lst.palavrax_modificada
 
-def distancia_genetic(a,b,k=0):
+def roda_genetic(a,b,k=0):
     """
     Função proxy para a utilização de algoritmos genéticos para o cálculo do custo
     para a transformação de uma string em outra
@@ -67,7 +67,7 @@ def distancia_genetic(a,b,k=0):
                algorithm_parameters=algorithm_param)
     model.run()
     return model
-a='abacs'
+'''a='abacs'
 b='caba'
 
 model = distancia_genetic(a,b,13)
@@ -78,6 +78,6 @@ variable = model.best_variable
 avaliacao = AvaliaMovimento(a,b)
 print(variable)
 print(avaliacao.palavra(variable))
-print(avaliacao.custo(variable))
+print(avaliacao.custo(variable))'''
 
 

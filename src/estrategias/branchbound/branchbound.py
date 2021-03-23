@@ -1,7 +1,13 @@
 import pybnb
-from estrategias.utils.utils_string_corrector_branch import OperacoesPossiveis,ListaMovimentos
+from src.utils.utils_string_corrector import OperacoesPossiveis,ListaMovimentos
 from copy import deepcopy
-import math
+
+
+def compara(movimentos, comparacao):
+    result = [movimento.operacao.value for movimento in movimentos]
+    return result[0:len(comparacao)] == comparacao
+
+
 
 class Simple(pybnb.Problem):
     '''
@@ -14,7 +20,6 @@ class Simple(pybnb.Problem):
         self._xL, self._xU = -len(str1)**len(str1), len(str1)**len(str1)+1
         self.lst = ListaMovimentos(str1, str2, 3)
         self.custo=len(str1)**len(str1)
-        self.max_operacoes = math.factorial(len(str1))
 
     #
     # required methods
@@ -31,27 +36,29 @@ class Simple(pybnb.Problem):
         (self.lst,self._xL, self._xU, self.custo)= node.state
     def branch(self):
         for i in [OperacoesPossiveis.SWAP,OperacoesPossiveis.DELETE,OperacoesPossiveis.NOP,OperacoesPossiveis.BACK_POS]:
-            if (self.lst.custo_total) <= self.max_operacoes:
-                #print(len(self.lst.movimentos))
-                p = len(self.lst.movimentos)
-                lst_cp = deepcopy(self.lst)
-                if lst_cp.adiciona_movimento(i):
-                    child = pybnb.Node()
-                    if(lst_cp.is_finished()):
-                        if self.custo > lst_cp.custo_total:
-                            #self._xU = lst_cp.custo_total
-                            #self._xL = -1
-                            #self.custo = lst_cp.custo_total
-                            lista_ops = Singleton()
-                            if lista_ops.lst == None:
-                                lista_ops.lst=lst_cp
-                            elif lst_cp.custo_total<lista_ops.lst.custo_total:
-                                lista_ops.lst = lst_cp
-                    child.state = (lst_cp,self._xL,self._xU,self.custo)
-                    yield child
-            else:
-                #print('cut')
+            child = pybnb.Node()
+            lst_cp = deepcopy(self.lst)
+            if compara(lst_cp.movimentos,[1,1,1,3,1,1,3,1,3,0,0,0]):
                 pass
+            if lst_cp.adiciona_movimento(i):
+                if(lst_cp.is_finished()):
+                    if lst_cp.is_same() == False:
+                        lst_cp.penaliza()
+                    if self.custo > lst_cp.custo_total:
+                        self._xU = lst_cp.custo_total+1
+                        self._xL = -1
+                        self.custo = lst_cp.custo_total
+                        lista_ops = Singleton()
+                        if lista_ops.lst == None:
+                            lista_ops.lst=lst_cp
+                        elif lst_cp.custo_total<lista_ops.lst.custo_total:
+                            #for i in lst_cp.movimentos:
+                            #    print(i.operacao.name + ' ', end='')
+                            #print('')
+                            lista_ops.lst = lst_cp
+                child.state = (lst_cp,self._xL,self._xU,self.custo)
+                yield child
+
     def notify_solve_finished(self,
                               comm,
                               worker_comm,
@@ -60,11 +67,10 @@ class Simple(pybnb.Problem):
 
         print('Resultado: ')
         lst = Singleton().lst
-        if lst!= None:
-            print(lst.custo_total)
-            print(lst.palavrax_modificada)
-            for i in lst.movimentos:
-                print(i.operacao.name+' ',end='')
+        print(lst.custo_total)
+        print(lst.palavrax_modificada)
+        for i in lst.movimentos:
+            print(i.operacao.name+' ',end='')
 
 class Singleton:
     _instance = None
@@ -74,7 +80,7 @@ class Singleton:
             cls._instance.lst=None
         return cls._instance
 
-def roda_brute(string_a,string_b):
+def roda_branch(string_a,string_b):
     sng = Singleton()
     sng.lst = None
     problem = Simple(string_a, string_b)
@@ -82,12 +88,19 @@ def roda_brute(string_a,string_b):
     results = solver.solve(problem)
     return results.objective
 
-a='ovas'
-b='avo'
+'''a='abacs'
+
+b='caba'''
 
 
 '''print(results.objective)
 print(results.wall_time)
 print(results.solution_status)'''
-
-roda_brute(a,b)
+'''import os
+import sys
+f = open(os.devnull, 'w')
+antigo = sys.stdout
+sys.stdout = f
+resultado = roda_branch(a,b)
+sys.stdout = antigo
+print(resultado)'''
