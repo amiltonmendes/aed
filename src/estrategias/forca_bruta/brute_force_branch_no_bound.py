@@ -32,16 +32,12 @@ class Simple(pybnb.Problem):
     def branch(self):
         for i in [OperacoesPossiveis.SWAP,OperacoesPossiveis.DELETE,OperacoesPossiveis.NOP,OperacoesPossiveis.BACK_POS]:
             if (self.lst.custo_total) <= self.max_operacoes:
-                #print(len(self.lst.movimentos))
                 p = len(self.lst.movimentos)
                 lst_cp = deepcopy(self.lst)
                 if lst_cp.adiciona_movimento(i):
                     child = pybnb.Node()
                     if(lst_cp.is_finished()):
                         if self.custo > lst_cp.custo_total:
-                            #self._xU = lst_cp.custo_total
-                            #self._xL = -1
-                            #self.custo = lst_cp.custo_total
                             lista_ops = Singleton()
                             if lista_ops.lst == None:
                                 lista_ops.lst=lst_cp
@@ -49,8 +45,12 @@ class Simple(pybnb.Problem):
                                 lista_ops.lst = lst_cp
                     child.state = (lst_cp,self._xL,self._xU,self.custo)
                     yield child
+                else:
+                    lst_cp.movimentos.clear()
+                    lst_cp.movimentos=None
+                    lst_cp=None
+
             else:
-                #print('cut')
                 pass
     def notify_solve_finished(self,
                               comm,
@@ -82,11 +82,11 @@ def roda_brute(string_a,string_b):
     results = solver.solve(problem)
     return results.objective
 
-'''a='ovas'
-b='avo'
+#a='ovas'
+#b='avo'
 
-print(results.objective)
+#print(roda_brute(a,b))
+'''print(results.objective)
 print(results.wall_time)
 print(results.solution_status)
-
-roda_brute(a,b)'''
+'''
