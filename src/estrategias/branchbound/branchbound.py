@@ -38,8 +38,6 @@ class Simple(pybnb.Problem):
         for i in [OperacoesPossiveis.SWAP,OperacoesPossiveis.DELETE,OperacoesPossiveis.NOP,OperacoesPossiveis.BACK_POS]:
             child = pybnb.Node()
             lst_cp = deepcopy(self.lst)
-            if compara(lst_cp.movimentos,[1,1,1,3,1,1,3,1,3,0,0,0]):
-                pass
             if lst_cp.adiciona_movimento(i):
                 if(lst_cp.is_finished()):
                     if lst_cp.is_same() == False:
@@ -58,7 +56,10 @@ class Simple(pybnb.Problem):
                             lista_ops.lst = lst_cp
                 child.state = (lst_cp,self._xL,self._xU,self.custo)
                 yield child
-
+            else:
+                lst_cp.movimentos.clear()
+                lst_cp.movimentos=None
+                lst_cp=None
     def notify_solve_finished(self,
                               comm,
                               worker_comm,
