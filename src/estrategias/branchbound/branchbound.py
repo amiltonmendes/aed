@@ -50,9 +50,6 @@ class Simple(pybnb.Problem):
                         if lista_ops.lst == None:
                             lista_ops.lst=lst_cp
                         elif lst_cp.custo_total<lista_ops.lst.custo_total:
-                            #for i in lst_cp.movimentos:
-                            #    print(i.operacao.name + ' ', end='')
-                            #print('')
                             lista_ops.lst = lst_cp
                 child.state = (lst_cp,self._xL,self._xU,self.custo)
                 yield child

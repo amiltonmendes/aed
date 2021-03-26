@@ -2,7 +2,7 @@ from src.utils.utils_string_corrector import OperacoesPossiveis,ListaMovimentos
 import numpy as np
 from geneticalgorithm import geneticalgorithm as ga
 import editdistance
-
+import math
 class AvaliaMovimento:
     def __init__(self,a,b):
         self.stringa=a
@@ -18,9 +18,6 @@ class AvaliaMovimento:
                 lst.adiciona_movimento(OperacoesPossiveis.BACK_POS)
             elif param == OperacoesPossiveis.DELETE.value:
                 lst.adiciona_movimento(OperacoesPossiveis.DELETE)
-        #if(lst.is_same()==False):
-        #    lst.custo_total += lst.penalidade*len(lst.movimentos)
-
         return (lst.penalidade**(2*editdistance.eval(lst.palavrax_modificada,lst.palavray))-1)\
                +lst.custo_total
     def palavra(self,parametros):
@@ -45,12 +42,10 @@ def roda_genetic(a,b,k=0):
     :return: custo de transformação da string 1 em string 2 segundo o algoritmo genético
     """
     avalia = AvaliaMovimento(a,b)
-
-    total_populacao=3**(max(len(a),len(b)))
-    populacao_avaliada = max(total_populacao/2,10)
-    interacoes = 3000#max(populacao_avaliada,30)
+    interacoes = len(a)*len(b)
+    populacao_avaliada = max(math.factorial(len(a))/interacoes,2)
     if k==0:
-        num_parametros = len(a)
+        num_parametros = math.factorial(len(a))
     else:
         num_parametros=k
     varbound =  np.array([[0,3]]*num_parametros)
@@ -59,9 +54,9 @@ def roda_genetic(a,b,k=0):
                        'mutation_probability':0.1,\
                        'elit_ratio': 0.01,\
                        'crossover_probability': 0.7,\
-                       'parents_portion': 0.1,\
+                       'parents_portion': 0.3,\
                        'crossover_type':'uniform',\
-                       'max_iteration_without_improv':100}
+                       'max_iteration_without_improv':max(interacoes,10)}
     model = ga(function=avalia.custo,dimension=num_parametros,variable_type='int',variable_boundaries=varbound\
                ,convergence_curve=False,progress_bar=False,\
                algorithm_parameters=algorithm_param)

@@ -37,6 +37,8 @@ class Simple(pybnb.Problem):
                 if lst_cp.adiciona_movimento(i):
                     child = pybnb.Node()
                     if(lst_cp.is_finished()):
+                        if lst_cp.is_same() == False:
+                            lst_cp.penaliza()
                         if self.custo > lst_cp.custo_total:
                             lista_ops = Singleton()
                             if lista_ops.lst == None:
